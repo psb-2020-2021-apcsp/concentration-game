@@ -6,6 +6,8 @@ from tkinter import *
 from PIL import Image, ImageTk
 from random import randint
 import layout
+import threading    # make a new .PY file for threading
+
 """
 Concentration card game. This module currently creates the windows.
 """
@@ -14,7 +16,7 @@ Concentration card game. This module currently creates the windows.
 win = Tk()
 
 # Dimensions.
-ww, wh, pad, grid = 600, 600, 20, (6, 4, )
+ww, wh, pad, grid = 600, 600, 20, (6, 4)
 
 # Set the geometry of tkinter frame.
 win.geometry(f"{ww + 2 * pad}x{wh + 2 * pad}+100+100")
@@ -28,13 +30,13 @@ win.grid_columnconfigure(0, weight=1)
         
 # Load an image, resize it, create a PhotoImage.
 # https://stackoverflow.com/questions/52307290/what-is-the-difference-between-images-in-p-and-l-mode-in-pil/52307690#52307690
-png = Image.open("./cards/10C.png").convert('RGB')
+png = Image.open("./cards/green_back.png").convert('RGB')
 
 # Calculate the scale.
 nx, ny = grid
 scale = max((nx * (png.width + pad) + pad) / ww, (ny * (png.height + pad) + pad) / wh)
 w, h = int(png.width / scale - pad), int(png.height / scale - pad)
-ox, oy = int((ww - ((w + pad) * nx + pad)) / 2), int((wh - ((h + pad) * ny + pad)) / 2)
+
 print(f"Card from: {png.width}x{png.height} to: {w}x{h} is a scale of {scale:.2f}")
 png = png.resize((w, h,), Image.LANCZOS)
 img = ImageTk.PhotoImage(png)
