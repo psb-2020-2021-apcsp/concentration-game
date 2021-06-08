@@ -10,7 +10,7 @@ This is the final post-examination project of the Brookline High School [2020-20
 
 Tasks for this project include:
 
-- We need to give credit for the card images (source:[http://acbl.mybigcommerce.com/52-playing-cards/](http://acbl.mybigcommerce.com/52-playing-cards/)) &mdash; and we need a joker card image & card back image.
+- We need to give credit for the card images (source: [http://acbl.mybigcommerce.com/52-playing-cards/](http://acbl.mybigcommerce.com/52-playing-cards/)) &mdash; and we need a joker card image & card-back image w/ BHS logo (?).
 - User interface:
   - Managing user input for things like the number of card pairs.
   - Labels for score, timers, *etc.*.
