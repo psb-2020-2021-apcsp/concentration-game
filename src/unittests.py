@@ -11,6 +11,7 @@ class TestLayoutFunction(unittest.TestCase):
         (32, (8, 4, ), ),
         (106, (53, 2, ), ),
         (64, (8, 8, ), ),
+        
     ]
     def test_layouts(self):
         for n, size in self.tests:

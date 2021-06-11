@@ -26,5 +26,8 @@ def factor(n):
 """
 # Test even numbers on [2, 106]
 for i in range(2, 106 + 1, 2):
-    print(f"{i} {sizing(i)};", end=' ')
+    w, h = sizing(i)
+    # width wihin 3 of height
+    if w - h <= 3:
+        print(f"{i} {sizing(i)};", end=' ')
 """
