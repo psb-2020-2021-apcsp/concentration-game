@@ -3,9 +3,6 @@
 # main.py
 #
 import app
-import layout
-from random import randint  # why here?
-import threading            # make a new .PY file for threading
 
 """
 Concentration card game. This module currently creates the windows.
