@@ -171,7 +171,7 @@ class Game(ttk.Frame):
         for r in range(ny):
             for c in range(nx):
                 # Create scaled PhotoImage.
-                png = Image.open(files.cards[r * nx + c]).convert('RGB')
+                png = Image.open((files.cards + files.cards)[r * nx + c]).convert('RGB')
                 face = png.resize((w, h,), Image.LANCZOS)
                 self._images[r][c] = ImageTk.PhotoImage(face)
                 # Create Button w/ PhotoImage
