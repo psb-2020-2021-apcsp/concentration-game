@@ -38,6 +38,8 @@ def reset():
     echo('00:00')
 
 timer = threading.Thread(target=run)
+# https://stackoverflow.com/a/59130384
+timer.setDaemon(True)
 
 if __name__ == "__main__":
     timer.start()
