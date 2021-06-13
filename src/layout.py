@@ -31,5 +31,6 @@ if __name__ == "__main__":
     for i in range(2, 106 + 1, 2):
         w, h = sizing(i)
         # Print width wihin 3 of height.
+        # TODO: make sizing work for 3x4 cards closest to a square
         if w - h <= 3:
             print(f"{i} {sizing(i)};", end=' ')

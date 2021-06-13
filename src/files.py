@@ -2,7 +2,9 @@
 #
 # files.py
 #
-import os, os.path
+import os
+from os.path import abspath, dirname, join, splitext
+
 """
 Collect all the filenames of card faces.
 """
@@ -16,12 +18,12 @@ def card_pathnames(path, ext='.png'):
     # Iterate through files w/ "png" and append them to cards list.
     for root, dirs, files in os.walk(path, topdown=False):
         for name in files:
-            head, tail = os.path.splitext(name)
+            head, tail = splitext(name)
             if ext == tail:
-                cards.append(os.path.join(root, name))
+                cards.append(join(root, name))
     return cards
 
-cards = card_pathnames('./cards/faces/')
-
 if __name__ == "__main__":
+    cardpath = abspath(join(dirname(__file__), '../cards/faces'))
+    cards = card_pathnames(cardpath)
     print(len(cards), cards)

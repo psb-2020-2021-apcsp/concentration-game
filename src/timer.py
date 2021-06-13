@@ -37,12 +37,14 @@ def reset():
     total = 0
     echo('00:00')
 
+# Define timer daemon thread.
 timer = threading.Thread(target=run)
 # https://stackoverflow.com/a/59130384
-timer.setDaemon(True)
+timer.daemon = True
 
 if __name__ == "__main__":
     timer.start()
+    # Count up to 5, then pause counting for 2s, then done.
     while True:
         if total > 5:
             counting = False; print('wait 2s...'); sleep(2)
