@@ -27,6 +27,8 @@ class App(tk.Tk):
 
         self.title('Concentration Game')
         self.configure(background=self._color)
+        self.attributes('-topmost',True)
+        self.geometry(f"+{p}+{p}")
 
         # Set default styles.
         frame_style = ttk.Style()
@@ -147,8 +149,16 @@ class Game(ttk.Frame):
 
     def on_click(self, button):
         info = button.grid_info()
-        position = (int(info['row']), int(info['column'], ), )
-        print(f"{position} {button.cget('image')}")
+        row, column = int(info['row']), int(info['column'])
+        print(f"({row},{column}) {button.cget('image')} "
+              f"back={self._back} card={self._images[row][column]}")
+
+        # Swap face for back or back for face.
+        # TODO: integrate this with gameplay
+        if str(button.cget('image')[0]) == str(self._back):
+            button.configure(image=self._images[row][column])
+        else:
+            button.configure(image=self._back)
 
     def clear_frame(self):
        for widgets in self.winfo_children():
@@ -192,7 +202,7 @@ class Game(ttk.Frame):
                 face = png.resize((w, h,), Image.LANCZOS)
                 self._images[r][c] = ImageTk.PhotoImage(face)
                 # Create Button w/ PhotoImage
-                self._buttons[r][c] = ttk.Button(self, style='game.TButton', image=self._images[r][c])
+                self._buttons[r][c] = ttk.Button(self, style='game.TButton', image=self._back)
                 self._buttons[r][c].grid(row=r, column=c)
                 self._buttons[r][c].configure(command=lambda button=self._buttons[r][c]: self.on_click(button))
         del self._buttons
