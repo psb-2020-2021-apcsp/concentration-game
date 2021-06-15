@@ -20,7 +20,15 @@ class TestLayoutFunction(unittest.TestCase):
     def test_sizing(self):
         for n, size in self.sizing_tests:
             self.assertEqual(layout.sizing(n), size)
-
+ 
+    factor_tests = [
+        (5915587277, [1,], ),
+        (4093082899, [1,], ),
+        (8, [1,2], ),
+    ]
+    def test_factor(self):
+        for prime, factors in self.factor_tests:
+            self.assertEqual(layout.factor(prime),factors)
     # TODO: add factor test
 
 if __name__ == "__main__":

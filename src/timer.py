@@ -19,17 +19,16 @@ def format(seconds):
 
 # run function
 def run():
-    """Count second 10ths and echo it on even seconds until done."""
+    """Count second 25ths and echo it on even seconds until done."""
     global total
     reset()
     while True:
-        sleep(0.1)
+        sleep(0.25)
         if counting:
-            total += 0.1
-            if int(total * 10) % 10 == 0:
-                echo(format(total))
-        if done:
-            break
+            total += 0.25
+            # Why not int(total) == total?
+            if round(abs(total- int(total)), 3) == 0: echo(format(total))
+        if done:  break
 
 def reset():
     """Reset total and echo '00:00'."""
@@ -37,16 +36,14 @@ def reset():
     total = 0
     echo('00:00')
 
-# Define timer daemon thread.
-timer = threading.Thread(target=run)
-# https://stackoverflow.com/a/59130384
-timer.daemon = True
+# Define timer daemon thread. https://stackoverflow.com/a/59130384
+timer = threading.Thread(target=run, daemon=True)
 
 if __name__ == "__main__":
     timer.start()
     # Count up to 5, then pause counting for 2s, then done.
     while True:
-        if total > 5:
+        if total > 10:
             counting = False; print('wait 2s...'); sleep(2)
             done = True
             timer.join()
