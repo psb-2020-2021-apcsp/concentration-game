@@ -5,19 +5,23 @@
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
+import random, sys
 from os.path import abspath, dirname, join
-import files, layout, gameplay, timer
+import files, layout, gameplay, log, timer
 
 1234567890123456789012345678901234567890123456789012345678901234567890
-
 """
 Create the App.
 """
+
+logger = log.log(__name__)    # initialize logger
+
+
 class App(tk.Tk):
     # Initialize data.
     _width, _height, _pad = 600,600, 20
     _color = '#663399'
-    _number, _numbers = 6, (6,  8,  9,  10,  12,  14,  15,  18,  20,  21,  24,  27,  28,  32,  35,  36,  40,  44,  45,  50,  )
+    _number, _numbers = 6, (3,  6,  12,  14,  20,  24,  27,  30,  35,  42,  44,  48,  52, )
     _imagepath = abspath(join(dirname(__file__), '../cards'))
     _cards = files.card_pathnames(join(_imagepath, 'faces'))
 
@@ -60,18 +64,36 @@ class App(tk.Tk):
 
         # Start timer.
         timer.echo = self._info.update_time
-        timer.timer.start()
+        timer.fsm = gameplay.fsm
+        self._timer = timer.run_timer()
+        self.protocol("WM_DELETE_WINDOW", lambda: self.on_closing())
 
-        self.update_and_print()
+        # Start gameplay.
+        gameplay.show_face = self._game.show_face
+        gameplay.show_back = self._game.show_back
+        gameplay.get_id = self._game.get_id
+        gameplay.echo = self._info.update_score
+        gameplay.reset()
 
-    def update_and_print(self):
-        # Update and print informaton.
+        self.update_and_log()
+
+    def update_and_log(self):
+        # Update and log informaton.
         w, h, p = self._width, self._height, self._pad
         self.update()
-        print(f"ax={self.winfo_width()}; ay={self.winfo_height()};")
-        print(f"ix={self._info.winfo_width()}; iy={self._info.winfo_height()};")
-        print(f"gx={self._game.winfo_width()}; gy={self._game.winfo_height()};")
+        logger.info(f"wx={self.winfo_width()}; wy={self.winfo_height()};")
+        logger.info(f"ix={self._info.winfo_width()}; iy={self._info.winfo_height()};")
+        logger.info(f"gx={self._game.winfo_width()}; gy={self._game.winfo_height()};")
+
+        # Set minimum app size.
         self.minsize(width=w+p+p, height=h+p+p+self._info.winfo_height())
+
+    def on_closing(self):
+        """Stop timer, destroy app, and exit."""
+        timer.done = True
+        self._timer.join()
+        self.destroy()
+        sys.exit()
 
 
 class Info(ttk.Frame):
@@ -130,14 +152,19 @@ class Info(ttk.Frame):
 
     def option_changed(self, *args):
         timer.reset()
-        number = int(self._option.get()) * 2
+        gameplay.reset()
+        pairs = int(self._option.get())
         # TODO: change this to update score
-        self.labels['text'] = f'You selected: {layout.sizing(number)}'
-        self._root()._game.create_widgets(number)
-        self._root().update_and_print()
+        self.update_score(f"You selected: {layout.sizing(pairs * 2)}")
+        self._root()._game.create_widgets(pairs)
+        self._root().update_and_log()
+
+    def update_score(self, str):
+        self.labels.configure(text=str)
 
     def update_time(self, str):
         self.labelt.configure(text=str)
+
 
 class Game(ttk.Frame):
     
@@ -145,26 +172,41 @@ class Game(ttk.Frame):
         super().__init__(parent, **kwargs)
         number = self._root()._number
 
-        self.create_widgets(number * 2)
+        self.create_widgets(number)
+
+    def _show_image(self, image, row, col):
+        """Show image on button at (row, column, )."""
+        button = self._buttons[row][col]
+        button.configure(image=image)
+
+    def show_face(self, signal):
+        """Show the card face on button at (row, column, )."""
+        row, col = signal
+        self._show_image(self._images[row][col], row, col)
+
+    def show_back(self, signal):
+        """Show the card back on button at (row, column, )."""
+        row, col = signal
+        self._show_image(self._back, row, col)
+
+    def get_id(self, signal):
+        """Get id for image at (row, column, )."""
+        row, col = signal
+        return str(self._images[row][col])
 
     def on_click(self, button):
         info = button.grid_info()
-        row, column = int(info['row']), int(info['column'])
-        print(f"({row},{column}) {button.cget('image')} "
-              f"back={self._back} card={self._images[row][column]}")
-
-        # Swap face for back or back for face.
-        # TODO: integrate this with gameplay
-        if str(button.cget('image')[0]) == str(self._back):
-            button.configure(image=self._images[row][column])
-        else:
-            button.configure(image=self._back)
+        row, col = int(info['row']), int(info['column'])
+        logger.info(f"click: ({row},{col}) "
+            f"back={self._back} card={self._images[row][col]} "
+            f"{button.cget('image')} ")
+        gameplay.fsm((row, col, ))
 
     def clear_frame(self):
        for widgets in self.winfo_children():
           widgets.destroy()
 
-    def create_widgets(self, number):
+    def create_widgets(self, pairs):
         gw, gh = self._root()._width, self._root()._height,
         pad, color = self._root()._pad / 2, self._root()._color
 
@@ -176,11 +218,11 @@ class Game(ttk.Frame):
         png = Image.open(join(self._root()._imagepath, 'backs/blue_back.png')).convert('RGB')
 
         # Calculate the scale.
-        nx, ny = layout.sizing(number)
+        nx, ny = layout.sizing(pairs * 2)
         scale = max((nx * (png.width + pad) + pad) / gw, (ny * (png.height + pad) + pad) / gh)
         w, h = int(png.width / scale - pad), int(png.height / scale - pad)
 
-        print(f"Card from: {png.width}x{png.height} to: {w}x{h} is a scale of {scale:.2f}")
+        logger.info(f"Card from: {png.width}x{png.height} to: {w}x{h} is a scale of {scale:.2f}")
         back = png.resize((w, h,), Image.LANCZOS)
         self._back = ImageTk.PhotoImage(back)
 
@@ -189,23 +231,30 @@ class Game(ttk.Frame):
         style.theme_use('default')
         style.configure('game.TButton', background=color, borderwidth=1)
 
+
+        # TODO: put this in files?
+        # Create list of random paths for each pair of cards.
+        paths = random.sample(self._root()._cards, len(self._root()._cards))[: pairs]
+        # Create list of PhotoImages from list of random paths.
+        cards = [ ImageTk.PhotoImage(Image
+            .open(path)
+            .convert('RGB')
+            .resize((w, h,), Image.LANCZOS)) for path in paths ]
+        # Create random list of image pairs.
+        images = random.sample(cards + cards, pairs * 2)
+
         # Add images and buttons in a grid.
-        # TODO: create the real randomized card images.
-        # Images references must be remembered.
-        cards = self._root()._cards + self._root()._cards
+        # PhotoImages references must be remembered.
         self._images = [[None for i in range(nx)] for j in range(ny)]
         self._buttons = [[None for i in range(nx)] for j in range(ny)]
         for r in range(ny):
             for c in range(nx):
-                # Create scaled PhotoImage.
-                png = Image.open(cards[r * nx + c]).convert('RGB')
-                face = png.resize((w, h,), Image.LANCZOS)
-                self._images[r][c] = ImageTk.PhotoImage(face)
-                # Create Button w/ PhotoImage
+                # Add image to _images grid.
+                self._images[r][c] = images[r * nx + c]
+                # Create configured Button and add to _buttons grid.
                 self._buttons[r][c] = ttk.Button(self, style='game.TButton', image=self._back)
                 self._buttons[r][c].grid(row=r, column=c)
                 self._buttons[r][c].configure(command=lambda button=self._buttons[r][c]: self.on_click(button))
-        del self._buttons
 
 if __name__ == "__main__":
     app = App()
