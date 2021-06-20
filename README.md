@@ -30,8 +30,8 @@ Tasks for this project include:
 - In general, all code should follow [PEP-8](https://www.python.org/dev/peps/pep-0008/).
 - We should create a credit frame with the [repo link](https://github.com/psb-2020-2021-apcsp/concentration-game) and the [card image](http://acbl.mybigcommerce.com/52-playing-cards/) link at the bottom of the main `Frame`. If we follow [this](https://stackoverflow.com/a/23482749), we should be able to make the credits clickable.
 - Currently, the `Image` randomization takes place in `app.py` rather than `files.py`. There are two issues:
- - `Image`s are loaded with every change of game geometry. They should be loaded just once.
- - Should the `Image` randomization take place in `files.py`?
+  - `Image`s are loaded with every change of game geometry. They should be loaded just once.
+  - Should the `Image` randomization take place in `files.py`?
 - The game-play [state machine](https://en.wikipedia.org/wiki/Mealy_machine) should be documented with corrections. 
 - Also, **because `fsm` is invoked from different threads, it is possible to get into the wrong state with no way out**. So, either handle clicks waiting for a timeout, or synchronize `fsm`.
 - Scoring simply keeps track of matches. Nothing is done to detect winning, nor is anything done with a maximum time for losing.
