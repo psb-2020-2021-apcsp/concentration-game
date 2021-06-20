@@ -4,11 +4,14 @@
 #
 import os, random
 from os.path import abspath, dirname, join, splitext
+import log
 
+1234567890123456789012345678901234567890123456789012345678901234567890
 """
 Collect all the filenames of card faces.
 """
-1234567890123456789012345678901234567890123456789012345678901234567890
+
+logger = log.log(__name__)    # initialize logger
 
 def card_pathnames(path, ext='.png'):
     """Return paths to files in path with ext."""
@@ -21,9 +24,11 @@ def card_pathnames(path, ext='.png'):
             head, tail = splitext(name)
             if ext == tail:
                 cards.append(join(root, name))
+    logger.info(f"{len(cards)} {path} {[os.path.basename(c) for c in cards]}")
     return cards
 
 def random_list(card_list, pairs):
+    """Return random list of pairs of paths from card_list up to pairs pairs."""
     temp_list = card_list
     outlist = []
     for i in range(0, pairs):
@@ -34,11 +39,10 @@ def random_list(card_list, pairs):
     # NOTE: We decided to randomize the image pairs in app.py ...plus
     #       copying the double list does not randomize the entire list.
     # outlist = outlist * 2
+    logger.info(f"{len(outlist)} {outlist}")
     return outlist
 
 if __name__ == "__main__":
     cardpath = abspath(join(dirname(__file__), '../cards/faces'))
     cards = card_pathnames(cardpath)
-    print(len(cards), cards)
     randomized = random_list(cards, len(cards) // 2)
-    print(len(randomized), randomized)
