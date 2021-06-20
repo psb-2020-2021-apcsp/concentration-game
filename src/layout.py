@@ -3,10 +3,14 @@
 # layout.py
 #
 import math
+import log
+
 """
 Functions to calulate card layout.
 """
 1234567890123456789012345678901234567890123456789012345678901234567890
+
+logger = log.log(__name__)  # initialize logger
 
 def sizing(n):
     """Return a tuple (width, height) where width * height = n and
@@ -18,6 +22,7 @@ def sizing(n):
         trial = (n // f, f, )
         if abs(trial[0] - trial[1]) < abs(result[0] - result[1]):
             result = trial
+    logger.debug(f"{n} {result}")
     return result
 
 def factor(n):
@@ -25,12 +30,13 @@ def factor(n):
     return [ i for i in range(1, int(math.sqrt(n) + 1))
         if n % i == 0 ]
 
-
 if __name__ == "__main__":
+    pairs = tuple()
     # Test even numbers on [2, 106].
     for i in range(2, 106 + 1, 2):
         w, h = sizing(i)
-        # Print width wihin 3 of height.
-        # TODO: make sizing work for 3x4 cards closest to a square
-        if w - h <= 3:
-            print(f"{i} {sizing(i)};", end=' ')
+        # Print ratio 1 +/- 15%.
+        if abs(((w * 691) / (h * 1056)) - 1) <= 0.15:
+            logger.info(f"{i} {(w, h, )} {(w * 691) / (h * 1056):.2f}")
+            pairs += (i // 2, )
+    logger.info(f"_numbers in app: {pairs}")
