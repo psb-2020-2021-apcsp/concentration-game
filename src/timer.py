@@ -20,8 +20,8 @@ echo, fsm = logger.debug, lambda: logger.debug('fsm()')
 
 def reset():
     """Reset total and echo '00:00'."""
-    global total
-    total = 0
+    global total, maximum
+    total, delay = 0, 0
     echo('00:00')
 
 def start_wait(time=2):
@@ -46,6 +46,7 @@ def run():
             if total > maximum:
                 counting = False
         if done:
+            logger.info(f"Timer exiting...")
             break
 
 # Define timer daemon thread. https://stackoverflow.com/a/59130384
