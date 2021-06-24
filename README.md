@@ -36,6 +36,7 @@ Tasks for this project include:
 - Also, **because `fsm` is invoked from different threads, it is possible to get into the wrong state with no way out**. So, either handle clicks waiting for a timeout, or synchronize `fsm`.
 - Scoring simply keeps track of matches. Nothing is done to detect winning, nor is anything done with a maximum time for losing.
 - Unit tests (using [`pytest`](https://docs.pytest.org/)) for *all* functions. (We has started using `unittest`).
+- '`tkinter` is not thread safe' &mdash; yikes! We have to do something about that (see [this](https://stackoverflow.com/questions/32555945/python-3-and-tkinter-thread-join-blocks-main-thread-forever)). We should be able to use [`after`](https://www.pythontutorial.net/tkinter/tkinter-after/) *in lieu* of `timer.py`.
 - Classes? Should we encapsulate everything and make it object-oriented?
 - *So much more!* (See our [notes](https://drive.google.com/file/d/1UhX4aK-9mBqioveEm5JWuqGeYFfpsKQS/view).)
 
