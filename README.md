@@ -22,6 +22,12 @@ Score is determined... **HOW?**
 | `src/unittest.py` | Module that... |
 | `tests/test_layout.py` | Unit tests for `layout.py`. |
 
+### `gameplay.py`
+
+![concentration state machine](./concentration-state-machine.png)
+[Gliffy](https://gliffy.com) [source](https://go.gliffy.com/go/
+publish/13517385)
+
 ## TODO
 
 Tasks for this project include:
