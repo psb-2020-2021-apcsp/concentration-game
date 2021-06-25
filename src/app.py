@@ -5,7 +5,7 @@
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
-import random, sys
+import random, sys, webbrowser
 from os.path import abspath, dirname, join
 import files, layout, gameplay, log, timer
 
@@ -19,7 +19,7 @@ logger = log.log(__name__)    # initialize logger
 
 class App(tk.Tk):
     # Initialize data.
-    _width, _height, _pad = 600,600, 20
+    _width, _height, _pad = 500, 500, 12
     _color = '#663399'
     _number, _numbers = 6, (3,  6,  12,  14,  20,  24,  27,  30,  35,  42,  44,  48,  52, )
     _imagepath = abspath(join(dirname(__file__), '../cards'))
@@ -62,6 +62,11 @@ class App(tk.Tk):
         game.pack(fill=None, expand=True)
         self._game = game
 
+        # Create credit.
+        credit = Credit(frm)
+        credit.pack(fill=tk.X, expand=True)
+        self._credit = credit
+
         # Start timer.
         timer.echo = self._info.update_time
         timer.fsm = gameplay.fsm
@@ -77,21 +82,95 @@ class App(tk.Tk):
 
         self.update_and_log()
 
+    def log_string_dimension(self, string, name='Arial', size=14, log=logger.debug):
+        """Log width, height of string in font name / size."""
+        from tkinter.font import Font
+        tkfont = Font(family=name, size=size)
+        log(f"(width, height) of '{string}': {(tkfont.measure(string), tkfont.metrics('linespace'))}")
+
+    def log_winfo(self, widget, log=logger.debug):
+        """Log all winfo."""
+        # https://anzeljg.github.io/rin2/book2/2405/docs/tkinter/universal.html
+        atom = widget.winfo_atom(self)
+        log(f"winfo_atom = {atom}")
+        log(f"winfo_atomname = {widget.winfo_atomname(atom)}")
+        log(f"winfo_cells = {widget.winfo_cells()}")
+        log(f"winfo_children = {widget.winfo_children()}")
+        log(f"winfo_class = {widget.winfo_class()}")
+        log(f"winfo_colormapfull = {widget.winfo_colormapfull()}")
+        pointerx, pointery = widget.winfo_pointerx(), widget.winfo_pointery()
+        log(f"winfo_containing = {widget.winfo_containing(pointerx, pointery)}")
+        log(f"winfo_depth = {widget.winfo_depth()}")
+        log(f"winfo_exists = {widget.winfo_exists()}")
+        log(f"winfo_fpixels = {widget.winfo_fpixels('1i')}")
+        log(f"winfo_geometry = {widget.winfo_geometry()}")
+        log(f"winfo_height = {widget.winfo_height()}")
+        id = widget.winfo_id()
+        log(f"winfo_id = {id}")
+        log(f"winfo_interps = {widget.winfo_interps()}")
+        log(f"winfo_ismapped = {widget.winfo_ismapped()}")
+        log(f"winfo_manager = {widget.winfo_manager()}")
+        log(f"winfo_name = {widget.winfo_name()}")
+        log(f"winfo_parent = {widget.winfo_parent()}")
+        log(f"winfo_pathname = {widget.winfo_pathname(id)}")
+        log(f"winfo_pixels = {widget.winfo_pixels('1i')}")
+        log(f"winfo_pointerx = {pointerx}")
+        log(f"winfo_pointerxy = {widget.winfo_pointerxy()}")
+        log(f"winfo_pointery = {pointery}")
+        log(f"winfo_reqheight = {widget.winfo_reqheight()}")
+        log(f"winfo_reqwidth = {widget.winfo_reqwidth()}")
+        log(f"winfo_rgb = {widget.winfo_rgb('#639')}")
+        log(f"winfo_rootx = {widget.winfo_rootx()}")
+        log(f"winfo_rooty = {widget.winfo_rooty()}")
+        log(f"winfo_screen = {widget.winfo_screen()}")
+        log(f"winfo_screencells = {widget.winfo_screencells()}")
+        log(f"winfo_screendepth = {widget.winfo_screendepth()}")
+        log(f"winfo_screenheight = {widget.winfo_screenheight()}")
+        log(f"winfo_screenmmheight = {widget.winfo_screenmmheight()}")
+        log(f"winfo_screenmmwidth = {widget.winfo_screenmmwidth()}")
+        log(f"winfo_screenvisual = {widget.winfo_screenvisual()}")
+        log(f"winfo_screenwidth = {widget.winfo_screenwidth()}")
+        log(f"winfo_server = {widget.winfo_server()}")
+        log(f"winfo_toplevel = {widget.winfo_toplevel()}")
+        log(f"winfo_viewable = {widget.winfo_viewable()}")
+        log(f"winfo_visual = {widget.winfo_visual()}")
+        log(f"winfo_visualid = {widget.winfo_visualid()}")
+        log(f"winfo_visualsavailable = {widget.winfo_visualsavailable()}")
+        log(f"winfo_vrootheight = {widget.winfo_vrootheight()}")
+        log(f"winfo_vrootwidth = {widget.winfo_vrootwidth()}")
+        log(f"winfo_vrootx = {widget.winfo_vrootx()}")
+        log(f"winfo_vrooty = {widget.winfo_vrooty()}")
+        log(f"winfo_width = {widget.winfo_width()}")
+        log(f"winfo_x = {widget.winfo_x()}")
+        log(f"winf_y = {widget.winfo_y()}")
+
     def update_and_log(self):
         # Update and log informaton.
         w, h, p = self._width, self._height, self._pad
         self.update()
-        logger.info(f"wx={self.winfo_width()}; wy={self.winfo_height()};")
-        logger.info(f"ix={self._info.winfo_width()}; iy={self._info.winfo_height()};")
-        logger.info(f"gx={self._game.winfo_width()}; gy={self._game.winfo_height()};")
+
+        # To make sure app-size minima are correct, use reqwidth & reqheight!
+        logger.info(f"wx={self.winfo_reqwidth()}; wy={self.winfo_reqheight()};")
+        logger.info(f"ix={self._info.winfo_reqwidth()}; iy={self._info.winfo_reqheight()};")
+        logger.info(f"gx={self._game.winfo_reqwidth()}; gy={self._game.winfo_reqheight()};")
+        logger.info(f"cx={self._credit.winfo_reqwidth()}; cy={self._credit.winfo_reqheight()};")
 
         # Set minimum app size.
-        self.minsize(width=w+p+p, height=h+p+p+self._info.winfo_height())
+        mx = max(self._info.winfo_reqwidth(), self._game.winfo_reqwidth(), self._credit.winfo_reqwidth())
+        my = self._game.winfo_reqheight()
+        logger.info(f"mx={mx}; my={my};")
+        ih, ch = self._info.winfo_reqheight(), self._credit.winfo_reqheight()
+        logger.info(f" x={mx+p+p};  y={my+p+p+ih+ch};")
+        self.minsize(width=mx+p+p,height=my+p+p+ih+ch)
+
+        self.log_string_dimension('HELLO WORLD!')
+        self.log_winfo(self)
 
     def on_closing(self):
         """Stop timer, destroy app, and exit."""
+        logger.info(f"Window closing...")
         timer.done = True
-        self._timer.join()
+        # self._timer.join()
         self.destroy()
         sys.exit()
 
@@ -208,7 +287,7 @@ class Game(ttk.Frame):
 
     def create_widgets(self, pairs):
         gw, gh = self._root()._width, self._root()._height,
-        pad, color = self._root()._pad / 2, self._root()._color
+        pad, color = self._root()._pad // 2, self._root()._color
 
         # Clear frame.
         self.clear_frame()
@@ -219,18 +298,19 @@ class Game(ttk.Frame):
 
         # Calculate the scale.
         nx, ny = layout.sizing(pairs * 2)
-        scale = max((nx * (png.width + pad) + pad) / gw, (ny * (png.height + pad) + pad) / gh)
-        w, h = int(png.width / scale - pad), int(png.height / scale - pad)
+        scale = lambda n, d, wh: (n * (d + pad) + pad) / wh
+        divisor = max(scale(nx, png.width, gw), scale(ny, png.height, gh))
+        w, h = int(png.width / divisor - pad), int(png.height / divisor - pad)
 
-        logger.info(f"Card from: {png.width}x{png.height} to: {w}x{h} is a scale of {scale:.2f}")
+        logger.info(f"Card from: {png.width}x{png.height} to: {w}x{h} is a scale of {divisor:.2f}")
         back = png.resize((w, h,), Image.LANCZOS)
         self._back = ImageTk.PhotoImage(back)
+        logger.info(f"Image dimensions: {self._back.width()}x{self._back.height()}")
 
         # Set button style
         style = ttk.Style()
         style.theme_use('default')
-        style.configure('game.TButton', background=color, borderwidth=1)
-
+        style.configure('game.TButton', background=color, borderwidth=0)
 
         # TODO: put this in files?
         # Create list of random paths for each pair of cards.
@@ -255,6 +335,65 @@ class Game(ttk.Frame):
                 self._buttons[r][c] = ttk.Button(self, style='game.TButton', image=self._back)
                 self._buttons[r][c].grid(row=r, column=c)
                 self._buttons[r][c].configure(command=lambda button=self._buttons[r][c]: self.on_click(button))
+
+class Credit(ttk.Frame):
+
+    def __init__(self, parent, **kwargs):
+        super().__init__(parent, **kwargs)
+
+        # Create widgets.
+        self.create_widgets()
+
+    def on_click(self, event):
+        webbrowser.open_new(event.widget.cget("text"))
+
+    def create_widgets(self):
+        pad, color = self._root()._pad / 4, self._root()._color
+
+        # Padding for widgets.
+        paddings_nw = {'padx': (0, pad // 2, ), 'pady': (pad, pad // 2, )}
+        paddings_ne = {'padx': (pad // 2, 0, ), 'pady': (pad, pad // 2, )}
+        paddings_sw = {'padx': (0, pad // 2, ), 'pady': (pad // 2, pad, )}
+        paddings_se = {'padx': (pad // 2, 0, ), 'pady': (pad // 2, pad, )}
+
+        # Set credit style.
+        stylec = ttk.Style()
+        stylec.theme_use('default')
+        stylec.configure('c.TLabel',
+            background=color,
+            foreground='white',
+            font=('Arial', 14, ))
+
+        # Set link style.
+        stylel = ttk.Style()
+        stylel.theme_use('default')
+        stylel.configure('l.TLabel',
+            background=color,
+            foreground='white',
+            font=('Arial', 14, 'underline', ))
+
+        # Create repo credit label.
+        labelrc = ttk.Label(self, text='Repository:', style='c.TLabel')
+        labelrc.grid(row=0, column=0, sticky=tk.E, **paddings_nw)
+
+        # Create repo link label.
+        rl = r'https://github.com/psb-2020-2021-apcsp/concentration-game'
+        labelrl = ttk.Label(self, text=rl, cursor='right_ptr', style='l.TLabel')
+        labelrl.bind('<Button-1>', self.on_click)
+        labelrl.grid(row=0, column=1, sticky=tk.W, **paddings_ne)
+
+        # Create image credit label.
+        labelic = ttk.Label(self, text='Image Credit:', style='c.TLabel')
+        labelic.grid(row=1, column=0, sticky=tk.E, **paddings_sw)
+
+        # Create image link label.
+        il = r'http://acbl.mybigcommerce.com/52-playing-cards/'
+        labelil = ttk.Label(self, text=il, cursor='right_ptr', style='l.TLabel')
+        labelil.bind('<Button-1>', self.on_click)
+        labelil.grid(row=1, column=1, sticky=tk.W, **paddings_se)
+
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)
 
 if __name__ == "__main__":
     app = App()
