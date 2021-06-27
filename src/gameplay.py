@@ -2,7 +2,7 @@
 #
 # gameplay.py
 #
-import log, timer
+import log, score
 
 """
 Implement the finite state machine for game play.
@@ -14,8 +14,10 @@ logger = log.log(__name__)  # initialize logger
 # Initialize module data.
 state, first, second, correct = 0, None, None, list()
 # Callbacks for show_back, show_face, get_id, echo w/ defaults.
-show_back, show_face, get_id, echo = logger.info, logger.info, \
-    lambda id: [ f"pyimage{id[0]}", f"pyimage{id[0]}", ][id[1]], logger.info
+show = lambda f, s: logger.info(f"{f}({s})")
+show_back, show_face, get_id = lambda s: show('back', s), lambda s: show('frnt', s), \
+    lambda s: [ f"pyimage{s[0]}", f"pyimage{s[0]}", ][s[1]]
+start, stop = lambda: logger.info(f"start..."), lambda: logger.info(f"stop...")
 
 def reset():
     global state, first, second, correct
@@ -30,31 +32,37 @@ def fsm(signal=None):
     # Remember state and clicked values.
     global state, first, second, correct
     states = [ 'start', 'clicked', 'wait', ]
-    logger.info(f"  start: {states[state]} {signal} ({first} {second})")
+    logger.info(f"start: {states[state]} {signal} ({first} {second})")
 
     if state == 0:      # start - not yet clicked
         if signal is None:
             state = 0   # start
-        if signal is not None and get_id(signal) not in correct:
-            show_face(signal)
+        if signal is not None and score.matched(get_id(signal)):
+            state = 0   # start
+        if signal is not None and not score.matched(get_id(signal)):
             first = signal
+            show_face(signal)
             state = 1   # clicked
     elif state == 1:    # clicked - clicked once
         if signal is None:
             state = 1   # clicked
-        if signal is not None:
+        if signal is not None and score.matched(get_id(signal)) or signal == first:
+            state = 1   # clicked
+        if signal is not None and not score.matched(get_id(signal)) and signal != first:
             show_face(signal)
             second = signal
-            if first != second:
-                if get_id(first) == get_id(second):
-                    correct.append(get_id(signal))
-                    logger.info(f"correct: {correct}")
-                    echo(f"Score: {len(correct)}")
-                    state = 0   # start
-                else:
-                    timer.start_wait()
-                    state = 2   # wait
-                    # fsm()   # TODO: REMOVE WHEN TIMER WORKING
+            logger.info(f"'{get_id(first)}' "
+                        f"{'=' if get_id(first) == get_id(second) else '!'}= "
+                        f"'{get_id(second)}'")
+            if get_id(first) == get_id(second):
+                score.score(get_id(signal))
+                state = 0   # start
+                # Reinitialize first and second just for info logging.
+                first, second = None, None
+            else:
+                score.score()
+                start()
+                state = 2   # wait
     elif state == 2:    # wait - clicked twice and failed
         if signal is None:
             show_back(first)
@@ -62,14 +70,23 @@ def fsm(signal=None):
             # Reinitialize first and second just for info logging.
             first, second = None, None
             state = 0   # start
-        if signal is not None:
-            state = 2   # clicked
-    logger.info(f"    end: {states[state]} {signal} ({first} {second})")
+        if signal is not None and score.matched(get_id(signal)):
+            state = 2   # wait
+        if signal is not None and not score.matched(get_id(signal)):
+            stop()
+            show_back(first)
+            show_back(second)
+            # Reinitialize first and second just for info logging.
+            first, second = None, None
+            first = signal
+            show_face(signal)
+            state = 1   # clicked
+    logger.info(f"  end: {states[state]} {signal} ({first} {second})")
 
 if __name__ == "__main__":
     import time
-    timer.fsm = fsm
-    timer.run_timer()
+
+    reset()
 
     # timeout
     fsm()
@@ -81,7 +98,7 @@ if __name__ == "__main__":
 
     # click incorrect pair
     fsm((1, 0,))
-    fsm((0, 0,))
+    fsm((2, 0,))
     logger.info('sleeping 3s...')
     time.sleep(3)
 
