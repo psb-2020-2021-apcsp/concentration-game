@@ -7,7 +7,7 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 import random, sys, webbrowser
 from os.path import abspath, dirname, join
-import files, layout, gameplay, log, timer
+import files, layout, gameplay, log, score
 
 1234567890123456789012345678901234567890123456789012345678901234567890
 """
@@ -33,6 +33,7 @@ class App(tk.Tk):
         self.configure(background=self._color)
         self.attributes('-topmost',True)
         self.geometry(f"+{p}+{p}")
+        self.protocol("WM_DELETE_WINDOW", lambda: self.on_closing())
 
         # Set default styles.
         frame_style = ttk.Style()
@@ -67,20 +68,48 @@ class App(tk.Tk):
         credit.pack(fill=tk.X, expand=True)
         self._credit = credit
 
-        # Start timer.
-        timer.echo = self._info.update_time
-        timer.fsm = gameplay.fsm
-        self._timer = timer.run_timer()
-        self.protocol("WM_DELETE_WINDOW", lambda: self.on_closing())
-
         # Start gameplay.
         gameplay.show_face = self._game.show_face
         gameplay.show_back = self._game.show_back
         gameplay.get_id = self._game.get_id
-        gameplay.echo = self._info.update_score
+        gameplay.start = self._game.start_delay
+        gameplay.stop = self._game.stop_delay
         gameplay.reset()
 
+        # Start score.
+        score.echo = self._info.update_score
+        score.reset()
+
         self.update_and_log()
+
+    def update_and_log(self):
+        # Update and log informaton.
+        w, h, p = self._width, self._height, self._pad
+        self.update()
+
+        # To make sure app-size minima are correct, use reqwidth & reqheight!
+        logger.info(f"wx={self.winfo_reqwidth()}; wy={self.winfo_reqheight()};")
+        logger.info(f"ix={self._info.winfo_reqwidth()}; iy={self._info.winfo_reqheight()};")
+        logger.info(f"gx={self._game.winfo_reqwidth()}; gy={self._game.winfo_reqheight()};")
+        logger.info(f"cx={self._credit.winfo_reqwidth()}; cy={self._credit.winfo_reqheight()};")
+
+        # Set minimum app size.
+        mx = max(self._info.winfo_reqwidth(), self._game.winfo_reqwidth(), self._credit.winfo_reqwidth())
+        my = self._game.winfo_reqheight()
+        logger.info(f"mx={mx}; my={my};")
+        ih, ch = self._info.winfo_reqheight(), self._credit.winfo_reqheight()
+        logger.info(f" x={mx+p+p};  y={my+p+p+ih+ch};")
+        self.minsize(width=mx+p+p,height=my+p+p+ih+ch)
+
+        # TODO: use these font-size and winfo logs
+        self.log_string_dimension('HELLO WORLD!')
+        self.log_winfo(self)
+
+    def on_closing(self):
+        """Stop timer, destroy app, and exit."""
+        logger.info(f"Window closing...")
+        self.destroy()
+        sys.exit()
 
     def log_string_dimension(self, string, name='Arial', size=14, log=logger.debug):
         """Log width, height of string in font name / size."""
@@ -89,7 +118,7 @@ class App(tk.Tk):
         log(f"(width, height) of '{string}': {(tkfont.measure(string), tkfont.metrics('linespace'))}")
 
     def log_winfo(self, widget, log=logger.debug):
-        """Log all winfo."""
+        """Log all winfo properties of widget."""
         # https://anzeljg.github.io/rin2/book2/2405/docs/tkinter/universal.html
         atom = widget.winfo_atom(self)
         log(f"winfo_atom = {atom}")
@@ -144,47 +173,23 @@ class App(tk.Tk):
         log(f"winfo_x = {widget.winfo_x()}")
         log(f"winf_y = {widget.winfo_y()}")
 
-    def update_and_log(self):
-        # Update and log informaton.
-        w, h, p = self._width, self._height, self._pad
-        self.update()
-
-        # To make sure app-size minima are correct, use reqwidth & reqheight!
-        logger.info(f"wx={self.winfo_reqwidth()}; wy={self.winfo_reqheight()};")
-        logger.info(f"ix={self._info.winfo_reqwidth()}; iy={self._info.winfo_reqheight()};")
-        logger.info(f"gx={self._game.winfo_reqwidth()}; gy={self._game.winfo_reqheight()};")
-        logger.info(f"cx={self._credit.winfo_reqwidth()}; cy={self._credit.winfo_reqheight()};")
-
-        # Set minimum app size.
-        mx = max(self._info.winfo_reqwidth(), self._game.winfo_reqwidth(), self._credit.winfo_reqwidth())
-        my = self._game.winfo_reqheight()
-        logger.info(f"mx={mx}; my={my};")
-        ih, ch = self._info.winfo_reqheight(), self._credit.winfo_reqheight()
-        logger.info(f" x={mx+p+p};  y={my+p+p+ih+ch};")
-        self.minsize(width=mx+p+p,height=my+p+p+ih+ch)
-
-        self.log_string_dimension('HELLO WORLD!')
-        self.log_winfo(self)
-
-    def on_closing(self):
-        """Stop timer, destroy app, and exit."""
-        logger.info(f"Window closing...")
-        timer.done = True
-        # self._timer.join()
-        self.destroy()
-        sys.exit()
-
 
 class Info(ttk.Frame):
+    # Initialize data.
+    _after = None
 
     def __init__(self, parent, **kwargs):
         super().__init__(parent, **kwargs)
+        number = self._root()._number
+
+        # Reset clock based on number.
+        self.reset_clock(number)
 
         # Set up variable.
         self._option = tk.StringVar(self)
 
         # Create widgets.
-        self.create_widgets(self._root()._number, self._root()._numbers)
+        self.create_widgets(number, self._root()._numbers)
 
     def create_widgets(self, number, numbers):
         pad, color = self._root()._pad / 4, self._root()._color
@@ -222,18 +227,19 @@ class Info(ttk.Frame):
         self.labels = ttk.Label(self, foreground='red')
         self.labels.grid(row=2, column=0, sticky='', **paddings)
 
-        # Create timer label.
-        self.labelt = ttk.Label(self, foreground='red', text="00:00")
-        self.labelt.grid(row=2, column=1, sticky=tk.E, **paddings)
+        # Create clock label.
+        self.labelc = ttk.Label(self, foreground='red', text="00:00")
+        self.labelc.grid(row=2, column=1, sticky=tk.E, **paddings)
 
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
 
     def option_changed(self, *args):
-        timer.reset()
         gameplay.reset()
         pairs = int(self._option.get())
-        # TODO: change this to update score
+        logger.info(f"Layout: {layout.sizing(pairs * 2)} for {pairs} pairs")
+        self.reset_clock(pairs)
+        # Before any score, display the new layout.
         self.update_score(f"You selected: {layout.sizing(pairs * 2)}")
         self._root()._game.create_widgets(pairs)
         self._root().update_and_log()
@@ -241,11 +247,25 @@ class Info(ttk.Frame):
     def update_score(self, str):
         self.labels.configure(text=str)
 
-    def update_time(self, str):
-        self.labelt.configure(text=str)
+    def reset_clock(self, pairs, tick=1000):
+        if self._after is not None:
+            self.after_cancel(self._after)
+        self._seconds = score.seconds(pairs) + 1
+        self._after = self.after(tick, self.update_clock)
+
+    def update_clock(self, tick=1000):
+        self._seconds -= 1
+        mins, secs = int(self._seconds) // 60, int(self._seconds) % 60
+        display = f"{mins:02d}:{secs:02d}"
+        self.labelc.configure(text=display)
+        logger.debug(f"{display} remains")
+        if self._seconds > 0:
+            self._after = self.after(tick, self.update_clock)
 
 
 class Game(ttk.Frame):
+    # Initialize data.
+    _after = None
     
     def __init__(self, parent, **kwargs):
         super().__init__(parent, **kwargs)
@@ -280,6 +300,14 @@ class Game(ttk.Frame):
             f"back={self._back} card={self._images[row][col]} "
             f"{button.cget('image')} ")
         gameplay.fsm((row, col, ))
+
+    def start_delay(self, delay=2000):
+        """When timed out, invoke gameplay.fsm()."""
+        self._after = self.after(delay, gameplay.fsm)
+
+    def stop_delay(self):
+        """Cancel self.after."""
+        self.after_cancel(self._after)
 
     def clear_frame(self):
        for widgets in self.winfo_children():
