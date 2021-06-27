@@ -3,7 +3,7 @@
 # files.py
 #
 import os, random
-from os.path import abspath, dirname, join, splitext
+from os.path import join, splitext
 import log
 
 1234567890123456789012345678901234567890123456789012345678901234567890
@@ -43,6 +43,7 @@ def random_list(card_list, pairs):
     return outlist
 
 if __name__ == "__main__":
+    from os.path import abspath, dirname, join
     cardpath = abspath(join(dirname(__file__), '../cards/faces'))
     cards = card_pathnames(cardpath)
     randomized = random_list(cards, len(cards) // 2)

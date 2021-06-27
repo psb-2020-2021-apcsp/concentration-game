@@ -5,9 +5,9 @@
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
-import random, sys, webbrowser
-from os.path import abspath, dirname, join
-import files, gameplay, layout, log
+from os.path import join
+import random
+import gameplay, layout, log
 
 1234567890123456789012345678901234567890123456789012345678901234567890
 """
@@ -126,6 +126,8 @@ class Game(ttk.Frame):
         gameplay.reset()
 
 if __name__ == "__main__":
+    from os.path import abspath, dirname, join
+    import files
     class Test(tk.Tk):
         _number, _width, _height, _pad, = 6, 500, 500, 12
         _imagepath = abspath(join(dirname(__file__), '../cards'))

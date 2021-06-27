@@ -2,13 +2,12 @@
 #
 # layout.py
 #
-import math
-import log
+import log, math
 
+1234567890123456789012345678901234567890123456789012345678901234567890
 """
 Functions to calulate card layout.
 """
-1234567890123456789012345678901234567890123456789012345678901234567890
 
 logger = log.log(__name__)  # initialize logger
 

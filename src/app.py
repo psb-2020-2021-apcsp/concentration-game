@@ -7,7 +7,7 @@ from tkinter import ttk
 import sys
 from os.path import abspath, dirname, join
 import info, game, credit
-import files, layout, log
+import files, log
 
 1234567890123456789012345678901234567890123456789012345678901234567890
 """
