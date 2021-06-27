@@ -18,6 +18,7 @@ def log(name, level=logging.INFO):
     new_file = log_path is None
 
     FORMAT = '{asctime:s} {name:^10s} [{threadName:^10s}] {levelname:<8s} {message:s}'
+    FORMAT = '{asctime:s} {name:^10s} {levelname:<8s} {message:s}'
     logging.basicConfig(filename='/dev/null', level=logging.NOTSET)
     logger = logging.getLogger(name)
 
