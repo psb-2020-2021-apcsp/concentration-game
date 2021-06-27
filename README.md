@@ -13,8 +13,11 @@ Score is determined... **HOW?**
 | File | Description |
 | --- | --- |
 | `src/app.py` | The main [Tkinter](https://docs.python.org/3/library/tkinter.html) GUI app. |
+| `src/credit.py` | Module that implements the `Credit` widget. |
 | `src/files.py` | Module that manages image file paths. |
+| `src/game.py` | Module that implements the `Game` widget. |
 | `src/gameplay.py` | Module that implements the gameplay [state machine](https://en.wikipedia.org/wiki/Mealy_machine). |
+| `src/info.py` | Module that implements the `Info` widget. |
 | `src/layout.py` | Module that calculates game card layouts. |
 | `src/log.py` | Module that implements app [`logging`](https://docs.python.org/3/library/logging.html). |
 | `src/main.py` | Module that initiates the app. |
@@ -25,7 +28,15 @@ Score is determined... **HOW?**
 
 More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
 
+### `credit.py`
+
+More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
+
 ### `files.py`
+
+More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
+
+### `game.py`
 
 More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
 
@@ -35,6 +46,10 @@ More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
 
 [Gliffy](https://gliffy.com) [source](https://go.gliffy.com/go/
 publish/13517385)
+
+### `info.py`
+
+More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
 
 ### `layout.py`
 
@@ -65,10 +80,13 @@ Tasks for this project include:
 - Currently, the `Image` randomization takes place in `app.py` rather than `files.py`. There are two issues:
   - `Image`s are loaded with every change of game geometry (including the card back). It seems they should be loaded just once, but each time they must be resized &mdash; would that mean their quality would degrade with each game?
   - Should the `Image` randomization take place in `files.py`?
+- Scoring simply keeps track of good and bad guesses. Nothing is done to detect winning, nor is anything done with a maximum time for losing.
+- Can we make this into a two-player game?
 - Unit tests (using [`pytest`](https://docs.pytest.org/)) for *all* functions. (We has started using `unittest`).
 - Add some [command-line options](https://docs.python.org/3/library/argparse.html) (perhaps initial game size, logging level, *etc.*?).
 - Classes? Should we encapsulate everything and make it object-oriented?
 - Make this a runnable app? (How?)
+- Update `replit.sh` to selectively use `pip3` and run all unit tests.
 - *So much more!* (See our [notes](https://drive.google.com/file/d/1UhX4aK-9mBqioveEm5JWuqGeYFfpsKQS/view).)
 
 [&#128279; permalink](https://psb-2020-2021-apcsp.github.io/concentration-game) and [&#128297; repository](https://github.com/psb-2020-2021-apcsp/concentration-game) for this page.
