@@ -12,21 +12,49 @@ Score is determined... **HOW?**
 
 | File | Description |
 | --- | --- |
-| `src/app.py` | This is the main [Tkinter](https://docs.python.org/3/library/tkinter.html) GUI app. |
-| `src/files.py` | Module that... |
-| `src/gameplay.py` | Module that... |
-| `src/layout.py` | Module that... |
-| `src/log.py` | Module that... |
-| `src/main.py` | Module that... |
-| `src/timer.py` | Module that... |
-| `src/unittest.py` | Module that... |
-| `tests/test_layout.py` | Unit tests for `layout.py`. |
+| `src/app.py` | The main [Tkinter](https://docs.python.org/3/library/tkinter.html) GUI app. |
+| `src/files.py` | Module that manages image file paths. |
+| `src/gameplay.py` | Module that implements the gameplay [state machine](https://en.wikipedia.org/wiki/Mealy_machine). |
+| `src/layout.py` | Module that calculates game card layouts. |
+| `src/log.py` | Module that implements app [`logging`](https://docs.python.org/3/library/logging.html). |
+| `src/main.py` | Module that initiates the app. |
+| `src/score.py` | Module that implements game scoring. |
+| `tests/test_layout.py` | Unit tests for `layout.py` (so far). |
+
+### `app.py`
+
+More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
+
+### `files.py`
+
+More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
 
 ### `gameplay.py`
 
 ![concentration state machine](./concentration-state-machine.png)
+
 [Gliffy](https://gliffy.com) [source](https://go.gliffy.com/go/
 publish/13517385)
+
+### `layout.py`
+
+More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
+
+### `log.py`
+
+More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
+
+### `main.py`
+
+More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
+
+### `score.py`
+
+More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
+
+### `tests/`
+
+More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
 
 ## TODO
 
@@ -34,16 +62,13 @@ Tasks for this project include:
 
 - *This [documentation file](https://github.com/psb-2020-2021-apcsp/concentration-game/blob/main/README.md) should be completed*.
 - In general, all code should follow [PEP-8](https://www.python.org/dev/peps/pep-0008/).
-- We should create a credit frame with the [repo link](https://github.com/psb-2020-2021-apcsp/concentration-game) and the [card image](http://acbl.mybigcommerce.com/52-playing-cards/) link at the bottom of the main `Frame`. If we follow [this](https://stackoverflow.com/a/23482749), we should be able to make the credits clickable.
 - Currently, the `Image` randomization takes place in `app.py` rather than `files.py`. There are two issues:
-  - `Image`s are loaded with every change of game geometry. They should be loaded just once.
+  - `Image`s are loaded with every change of game geometry (including the card back). It seems they should be loaded just once, but each time they must be resized &mdash; would that mean their quality would degrade with each game?
   - Should the `Image` randomization take place in `files.py`?
-- The game-play [state machine](https://en.wikipedia.org/wiki/Mealy_machine) should be documented with corrections. 
-- Also, **because `fsm` is invoked from different threads, it is possible to get into the wrong state with no way out**. So, either handle clicks waiting for a timeout, or synchronize `fsm`.
-- Scoring simply keeps track of matches. Nothing is done to detect winning, nor is anything done with a maximum time for losing.
 - Unit tests (using [`pytest`](https://docs.pytest.org/)) for *all* functions. (We has started using `unittest`).
-- '`tkinter` is not thread safe' &mdash; yikes! We have to do something about that (see [this](https://stackoverflow.com/questions/32555945/python-3-and-tkinter-thread-join-blocks-main-thread-forever)). We should be able to use [`after`](https://www.pythontutorial.net/tkinter/tkinter-after/) *in lieu* of `timer.py`.
+- Add some [command-line options](https://docs.python.org/3/library/argparse.html) (perhaps initial game size, logging level, *etc.*?).
 - Classes? Should we encapsulate everything and make it object-oriented?
+- Make this a runnable app? (How?)
 - *So much more!* (See our [notes](https://drive.google.com/file/d/1UhX4aK-9mBqioveEm5JWuqGeYFfpsKQS/view).)
 
 [&#128279; permalink](https://psb-2020-2021-apcsp.github.io/concentration-game) and [&#128297; repository](https://github.com/psb-2020-2021-apcsp/concentration-game) for this page.
