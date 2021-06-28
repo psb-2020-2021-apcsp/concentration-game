@@ -24,7 +24,7 @@ def log(name, level=logging.INFO):
 
     # Create file handler which logs messages at level.
     if new_file: fd, log_path = tempfile.mkstemp('.log', 'concentration-')
-    fh = logging.FileHandler(log_path, 'w')
+    fh = logging.FileHandler(log_path, 'a')
     fh.setLevel(level)
 
     # Create console handler which logs messages at level.
