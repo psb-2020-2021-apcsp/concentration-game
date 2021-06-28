@@ -37,3 +37,22 @@ def matched(cid):
 def seconds(pairs):
     """Return countdown time (in seconds) for pairs matches."""
     return pairs * 4
+
+if __name__ == "__main__":
+    reset()
+    right, wrong = 'pyimage47', 'pyimage2'
+
+    # incorrect
+    score()
+
+    # correct
+    score(right)
+
+    # matched
+    for iid in (right, wrong, ):
+        logger.info(f"matched('{iid}') = {matched(iid)}")
+
+    # seconds
+    numbers = (3,  6,  12,  14,  20,  24,  27,  30,  35,  42,  44,  48,  52, )
+    for number in numbers:
+        logger.info(f"seconds({number:2d}) = {seconds(number):3d}")
