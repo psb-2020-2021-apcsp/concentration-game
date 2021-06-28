@@ -42,10 +42,17 @@ More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
 
 ### `gameplay.py`
 
+| Question | Description |
+| --- | --- |
+| What: | Module that implements the gameplay [state machine](https://en.wikipedia.org/wiki/Mealy_machine). |
+| API: | <ul style="padding-left: 1em;"><li>`fsm(signal=None)`. If `signal` is a `(row, column, )` tuple, then it represents a click of that card. If `signal` is `None`, then it represents a timeout.</li></ul> |
+| Callbacks: | <li>`show_back` &mdash;</li><li>`show_face` &mdash;</li><li>`get_id` &mdash;</li><li>`start_delay` &mdash;</li><li>`stop_delay` &mdash; </li> |
+| How: | <ul style="padding-left: 1em;"><li></li></ul> |
+| Why: | Why were these choices made? |
+
 ![concentration state machine](./concentration-state-machine.png)
 
-[Gliffy](https://gliffy.com) [source](https://go.gliffy.com/go/
-publish/13517385)
+[Gliffy](https://gliffy.com) [source](https://go.gliffy.com/go/publish/13517385)
 
 ### `info.py`
 
@@ -64,6 +71,8 @@ More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
 More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
 
 ### `score.py`
+
+Note: [This paper](http://eprints-dev5.cs.univie.ac.at/5522/1/2013-memory.pdf) indicates that, in 'the 1–player solitaire game, where the goal is to need as few moves as possible to collect all cards off the table, ...[we] prove that an optimal strategy needs less than 1.75·n moves in expectation.' That may give us some insight into game timing or scoring.
 
 More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
 
