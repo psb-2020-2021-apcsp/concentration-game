@@ -4,6 +4,7 @@
 #
 import tkinter as tk
 from tkinter import ttk
+import webbrowser
 import log
 
 1234567890123456789012345678901234567890123456789012345678901234567890
