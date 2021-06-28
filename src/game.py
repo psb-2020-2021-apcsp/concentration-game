@@ -121,8 +121,8 @@ class Game(ttk.Frame):
         gameplay.show_face = self.show_face
         gameplay.show_back = self.show_back
         gameplay.get_id = self.get_id
-        gameplay.start = self.start_delay
-        gameplay.stop = self.stop_delay
+        gameplay.start_delay = self.start_delay
+        gameplay.stop_delay = self.stop_delay
         gameplay.reset()
 
 if __name__ == "__main__":
