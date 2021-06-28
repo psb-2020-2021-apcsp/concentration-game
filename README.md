@@ -45,9 +45,9 @@ More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
 | Question | Description |
 | --- | --- |
 | What: | Module that implements the gameplay [state machine](https://en.wikipedia.org/wiki/Mealy_machine). |
-| API: | <ul style="padding-left: 1em;"><li>`fsm(signal=None)`. If `signal` is a `(row, column, )` tuple, then it represents a click of that card. If `signal` is `None`, then it represents a timeout.</li></ul> |
-| Callbacks: | <li>`show_back` &mdash;</li><li>`show_face` &mdash;</li><li>`get_id` &mdash;</li><li>`start_delay` &mdash;</li><li>`stop_delay` &mdash; </li> |
-| How: | <ul style="padding-left: 1em;"><li></li></ul> |
+| API: | - `fsm(signal=None)`. If `signal` is a `(row, column, )` tuple, then it represents a click of that card. If `signal` is `None`, then it represents a timeout. |
+| Callbacks: | - `show_back` &mdash; <br>- `show_face` &mdash;<br>- `get_id` &mdash;<br>- `start_delay` &mdash;<br>- `stop_delay` &mdash; |
+| How: | -  |
 | Why: | Why were these choices made? |
 
 ![concentration state machine](./concentration-state-machine.png)
