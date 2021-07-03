@@ -178,4 +178,6 @@ Tasks for this project include:
 - Update `replit.sh` to selectively use `pip3` and run all unit tests.
 - *So much more!* (See our [notes](https://drive.google.com/file/d/1UhX4aK-9mBqioveEm5JWuqGeYFfpsKQS/view).)
 
+<hr>
+
 [&#128279; permalink](https://psb-2020-2021-apcsp.github.io/concentration-game) and [&#128297; repository](https://github.com/psb-2020-2021-apcsp/concentration-game) for this page.
