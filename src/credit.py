@@ -11,8 +11,16 @@ import log
 """
 Create the App.
 """
+__all__ = ["Credit", ]
+__author__ = "https://github.com/psb-2020-2021-apcsp/"
+__copyright__ = "Copyright 2021, Public Schools of Brookline 2020-2021 APCS-P"
+__license__ = "https://choosealicense.com/licenses/mit/"
+__version__ = "0.0.1"
+__maintainer__ = "David C. Petty"
+__email__ = "david_petty@psbma.org"
+__status__ = "Development"
 
-logger = log.log(__name__)    # initialize logger
+logger = log.log(__name__)  # initialize logger
 
 
 class Credit(ttk.Frame):
@@ -23,13 +31,15 @@ class Credit(ttk.Frame):
         # Create widgets.
         self.create_widgets()
 
-    def on_click(self, event):
+    @staticmethod
+    def on_click(event):
         """When label clicked, open a webbrowser to the text URI."""
         webbrowser.open_new(event.widget.cget("text"))
 
     def create_widgets(self):
-        pad = self._root()._pad / 4
-        family, size = self._root()._font_family, int(self._root()._font_size * 3 / 4)
+        root = self._root()
+        pad = root._pad / 4
+        family, size = root._font_family, int(root._font_size * 3 / 4)
 
         # Padding for widgets.
         paddings_nw = {'padx': (0, pad // 2, ), 'pady': (pad, pad // 2, )}
@@ -70,6 +80,7 @@ class Credit(ttk.Frame):
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=1)
 
+
 if __name__ == "__main__":
     class Test(tk.Tk):
         _pad, _font_family, _font_size = 12, 'Arial', 18
@@ -81,5 +92,5 @@ if __name__ == "__main__":
             credit = Credit(self)
             credit.pack()
 
-    credit = Test()
-    credit.mainloop()
+    test = Test()
+    test.mainloop()

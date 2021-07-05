@@ -8,8 +8,17 @@ import logging, tempfile
 """
 Logging module that logs to the console and a temporary log file.
 """
-# Initialize global log_path for temporary log file.
-log_path = None
+__all__ = ["log", ]
+__author__ = "https://github.com/psb-2020-2021-apcsp/"
+__copyright__ = "Copyright 2021, Public Schools of Brookline 2020-2021 APCS-P"
+__license__ = "https://choosealicense.com/licenses/mit/"
+__version__ = "0.0.1"
+__maintainer__ = "David C. Petty"
+__email__ = "david_petty@psbma.org"
+__status__ = "Development"
+
+log_path = None             # Initialize global log_path for temporary log file.
+
 
 # TODO: Set default level to logging.WARNING, once working.
 def log(name, level=logging.INFO):
@@ -17,13 +26,15 @@ def log(name, level=logging.INFO):
     global log_path
     new_file = log_path is None
 
-    FORMAT = '{asctime:s} {name:^10s} [{threadName:^10s}] {levelname:<8s} {message:s}'
+    FORMAT = '{asctime:s} {name:^10s} ' \
+             '[{threadName:^10s}] {levelname:<8s} {message:s}'
     FORMAT = '{asctime:s} {name:^10s} {levelname:<8s} {message:s}'
     logging.basicConfig(filename='/dev/null', level=logging.NOTSET)
     logger = logging.getLogger(name)
 
     # Create file handler which logs messages at level.
-    if new_file: fd, log_path = tempfile.mkstemp('.log', 'concentration-')
+    if new_file:
+        fd, log_path = tempfile.mkstemp('.log', 'concentration-')
     fh = logging.FileHandler(log_path, 'a')
     fh.setLevel(level)
 
@@ -41,9 +52,11 @@ def log(name, level=logging.INFO):
     logger.addHandler(ch)
     logger.addHandler(fh)
 
-    if new_file: logger.info(f"LOG PATH: {log_path}")
+    if new_file:
+        logger.info(f"LOG PATH: {log_path}")
 
     return logger
+
 
 if __name__ == '__main__':
     logger = log(__name__)

@@ -13,8 +13,16 @@ import gameplay, layout, log
 """
 Create the Game.
 """
+__all__ = ["Game", ]
+__author__ = "https://github.com/psb-2020-2021-apcsp/"
+__copyright__ = "Copyright 2021, Public Schools of Brookline 2020-2021 APCS-P"
+__license__ = "https://choosealicense.com/licenses/mit/"
+__version__ = "0.0.1"
+__maintainer__ = "David C. Petty"
+__email__ = "david_petty@psbma.org"
+__status__ = "Development"
 
-logger = log.log(__name__)    # initialize logger
+logger = log.log(__name__)  # initialize logger
 
 
 class Game(ttk.Frame):
@@ -23,8 +31,11 @@ class Game(ttk.Frame):
     
     def __init__(self, parent, **kwargs):
         super().__init__(parent, **kwargs)
-        number = self._root()._number
+        root = self._root()
+        number = root._number
 
+        # TODO: instance attributes are defined outside of __init__
+        # Create widgets.
         self.create_widgets(number)
 
     def _show_image(self, image, row, col):
@@ -52,8 +63,8 @@ class Game(ttk.Frame):
         info = button.grid_info()
         row, col = int(info['row']), int(info['column'])
         logger.info(f"click: ({row},{col}) "
-            f"back={self._back} card={self._images[row][col]} "
-            f"{button.cget('image')} ")
+                    f"back={self._back} card={self._images[row][col]} "
+                    f"{button.cget('image')} ")
         gameplay.fsm((row, col, ))
 
     def start_delay(self, delay=2000):
@@ -70,15 +81,15 @@ class Game(ttk.Frame):
             widgets.destroy()
 
     def create_widgets(self, pairs):
-        gw, gh = self._root()._width, self._root()._height
-        pad = self._root()._pad // 2
+        root = self._root()
+        gw, gh, pad = root._width, root._height, root._pad // 2
 
         # Clear frame.
         self.clear_frame()
 
         # Load an image, resize it, create a PhotoImage.
         # https://stackoverflow.com/questions/52307290/what-is-the-difference-between-images-in-p-and-l-mode-in-pil/52307690#52307690
-        png = Image.open(join(self._root()._imagepath, 'backs/blue_back.png')).convert('RGB')
+        png = Image.open(join(root._path, 'backs/blue_back.png')).convert('RGB')
 
         # Calculate the scale.
         nx, ny = layout.sizing(pairs * 2)
@@ -87,19 +98,20 @@ class Game(ttk.Frame):
         w, h = int(png.width / divisor - pad), int(png.height / divisor - pad)
 
         # Create card back PhotoImage.
-        logger.info(f"Card from: {png.width}x{png.height} to: {w}x{h} is a scale of {divisor:.2f}")
+        logger.info(f"Card from: {png.width}x{png.height} to: {w}x{h} "
+                    f"is a scale of {divisor:.2f}")
         back = png.resize((w, h,), Image.LANCZOS)
         self._back = ImageTk.PhotoImage(back)
         logger.info(f"Image dimensions: {self._back.width()}x{self._back.height()}")
 
         # TODO: put this in files?
         # Create list of random paths for each pair of cards.
-        paths = random.sample(self._root()._cards, len(self._root()._cards))[: pairs]
+        paths = random.sample(root._cards, len(root._cards))[: pairs]
         # Create list of PhotoImages from list of random paths.
-        cards = [ ImageTk.PhotoImage(Image
+        cards = [ImageTk.PhotoImage(Image
             .open(path)
             .convert('RGB')
-            .resize((w, h,), Image.LANCZOS)) for path in paths ]
+            .resize((w, h,), Image.LANCZOS)) for path in paths]
         # Create random list of image pairs.
         images = random.sample(cards + cards, pairs * 2)
 
@@ -125,9 +137,11 @@ class Game(ttk.Frame):
         gameplay.stop_delay = self.stop_delay
         gameplay.reset()
 
+
 if __name__ == "__main__":
     from os.path import abspath, dirname, join
     import files
+
     class Test(tk.Tk):
         _number, _width, _height, _pad, = 6, 500, 500, 12
         _imagepath = abspath(join(dirname(__file__), '../cards'))
@@ -140,5 +154,5 @@ if __name__ == "__main__":
             game = Game(self)
             game.pack()
 
-    game = Test()
-    game.mainloop()
+    test = Test()
+    test.mainloop()

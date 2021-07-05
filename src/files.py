@@ -10,8 +10,17 @@ import log
 """
 Collect all the filenames of card faces.
 """
+__all__ = ["card_pathnames", ]
+__author__ = "https://github.com/psb-2020-2021-apcsp/"
+__copyright__ = "Copyright 2021, Public Schools of Brookline 2020-2021 APCS-P"
+__license__ = "https://choosealicense.com/licenses/mit/"
+__version__ = "0.0.1"
+__maintainer__ = "David C. Petty"
+__email__ = "david_petty@psbma.org"
+__status__ = "Development"
 
-logger = log.log(__name__)    # initialize logger
+logger = log.log(__name__)  # initialize logger
+
 
 def card_pathnames(path, ext='.png'):
     """Return paths to files in path with ext."""
@@ -27,6 +36,8 @@ def card_pathnames(path, ext='.png'):
     logger.info(f"{len(cards)} {path} {[os.path.basename(c) for c in cards]}")
     return cards
 
+
+# TODO: update from game.py or remove from here
 def random_list(card_list, pairs):
     """Return random list of pairs of paths from card_list up to pairs pairs."""
     temp_list = card_list
@@ -42,8 +53,9 @@ def random_list(card_list, pairs):
     logger.info(f"{len(outlist)} {outlist}")
     return outlist
 
+
 if __name__ == "__main__":
     from os.path import abspath, dirname, join
-    cardpath = abspath(join(dirname(__file__), '../cards/faces'))
-    cards = card_pathnames(cardpath)
-    randomized = random_list(cards, len(cards) // 2)
+    card_path = abspath(join(dirname(__file__), '../cards/faces'))
+    card_paths = card_pathnames(card_path)
+    randomized = random_list(card_paths, len(card_paths) // 2)

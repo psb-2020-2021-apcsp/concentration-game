@@ -8,6 +8,17 @@ import log, score
 """
 Implement the finite state machine for game play.
 """
+__all__ = [
+    "fsm", "reset",
+    "show_back", "show_face", "get_id", "start_delay", "stop_delay",
+]
+__author__ = "https://github.com/psb-2020-2021-apcsp/"
+__copyright__ = "Copyright 2021, Public Schools of Brookline 2020-2021 APCS-P"
+__license__ = "https://choosealicense.com/licenses/mit/"
+__version__ = "0.0.1"
+__maintainer__ = "David C. Petty"
+__email__ = "david_petty@psbma.org"
+__status__ = "Development"
 
 logger = log.log(__name__)  # initialize logger
 
@@ -20,9 +31,11 @@ show_back, show_face = lambda s: show('back', s), lambda s: show('frnt', s),
 get_id = lambda s: [ f"pyimage{s[0]}", f"pyimage{s[0]}", ][s[1]]
 start_delay, stop_delay = lambda: delay(f"start..."), lambda: delay(f"stop...")
 
+
 def reset():
     global state, first, second
     state, first, second = 0, None, None
+
 
 def fsm(signal=None):
     """Perform one step of the game-play FSM by processing signal.
@@ -83,6 +96,7 @@ def fsm(signal=None):
             show_face(signal)
             state = 1   # clicked
     logger.info(f"  end: {states[state]} {signal} ({first} {second})")
+
 
 if __name__ == "__main__":
     import time

@@ -10,17 +10,27 @@ import gameplay, layout, log, score
 """
 Create the Info frame.
 """
+__all__ = ["Info", ]
+__author__ = "https://github.com/psb-2020-2021-apcsp/"
+__copyright__ = "Copyright 2021, Public Schools of Brookline 2020-2021 APCS-P"
+__license__ = "https://choosealicense.com/licenses/mit/"
+__version__ = "0.0.1"
+__maintainer__ = "David C. Petty"
+__email__ = "david_petty@psbma.org"
+__status__ = "Development"
 
-logger = log.log(__name__)    # initialize logger
+logger = log.log(__name__)  # initialize logger
 
  
 class Info(ttk.Frame):
     # Initialize data.
     _after = None
+    _seconds = 0
 
     def __init__(self, parent, **kwargs):
         super().__init__(parent, **kwargs)
-        number = self._root()._number
+        root = self._root()
+        number, numbers = root._number, root._numbers
 
         # Reset clock based on number.
         self.reset_clock(number)
@@ -28,8 +38,9 @@ class Info(ttk.Frame):
         # Set up variable for option menu.
         self._option = tk.StringVar(self)
 
+        # TODO: instance attributes are defined outside of __init__
         # Create widgets.
-        self.create_widgets(number, self._root()._numbers)
+        self.create_widgets(number, numbers)
 
     def option_changed(self, *args):
         """Game layout has changed, so reset game, clock, and app."""
@@ -60,11 +71,12 @@ class Info(ttk.Frame):
             self._after = self.after(tick, self.update_clock)
 
     def update_score(self, str):
-        """Callback for updating score label."""
+        """Update score label."""
         self._labels.configure(text=str)
 
     def create_widgets(self, number, numbers):
-        pad = self._root()._pad / 4
+        root = self._root()
+        pad = root._pad / 4
 
         # Padding for widgets.
         paddings = {'padx': pad, 'pady': pad}
@@ -73,7 +85,7 @@ class Info(ttk.Frame):
         stylen = ttk.Style()
         stylen.theme_use('default')
         stylen.configure('n.TLabel',
-            font=(self._root()._font_family, self._root()._font_size * 2))
+            font=(root._font_family, root._font_size * 2))
 
         # Create name label.
         labeln = ttk.Label(self, text='Concentration Game', style='n.TLabel')
@@ -108,6 +120,7 @@ class Info(ttk.Frame):
         score.echo = self.update_score
         score.reset()
 
+
 if __name__ == "__main__":
     class Test(tk.Tk):
         _pad, _font_family, _font_size = 12, 'Arial', 18
@@ -119,11 +132,11 @@ if __name__ == "__main__":
             super().__init__(**kwargs) 
             self.title('Test Info')
 
-            credit = Info(self)
-            credit.pack()
+            info = Info(self)
+            info.pack()
 
         def update_and_log(self):
             pass
 
-    info = Test()
-    info.mainloop()
+    test = Test()
+    test.mainloop()
