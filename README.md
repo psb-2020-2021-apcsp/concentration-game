@@ -166,16 +166,19 @@ Tasks for this project include:
 
 - *This [documentation file](https://github.com/psb-2020-2021-apcsp/concentration-game/blob/main/README.md) should be completed*.
 - In general, all code should follow [PEP-8](https://www.python.org/dev/peps/pep-0008/).
+- In a couple places, instance attributes are defined outside of `__init__` when they are given their initial values. Is that a problem?
 - Currently, the `Image` randomization takes place in `app.py` rather than `files.py`. There are two issues:
   - `Image`s are loaded with every change of game geometry (including the card back). It seems they should be loaded just once, but each time they must be resized &mdash; would that mean their quality would degrade with each game?
   - Should the `Image` randomization take place in `files.py`?
 - Scoring simply keeps track of good and bad guesses. Nothing is done to detect winning, nor is anything done with a maximum time for losing.
+- Some playing-card games only match rank and *color*. That would make the game easier. The image path contains `'C'`, `'D'`, `'H'`, or `'S'`, so the color could be determined from the filename. However, `Image.filename` is not available, once the image is resized, so a new `dict`ionary must be created to map image ids to filenames.
 - Can we make this into a two-player game?
 - Unit tests (using [`pytest`](https://docs.pytest.org/)) for *all* functions. (We has started using `unittest`).
 - Add some [command-line options](https://docs.python.org/3/library/argparse.html) (perhaps initial game size, logging level, *etc.*?).
 - Classes? Should we encapsulate everything and make it object-oriented?
 - Make this a runnable app? (How?)
 - Update `replit.sh` to selectively use `pip3` and run all unit tests.
+- Set default logging level to `logging.WARNING`, once everything is working (or maybe only `logging.INFO` to file?).
 - *So much more!* (See our [notes](https://drive.google.com/file/d/1UhX4aK-9mBqioveEm5JWuqGeYFfpsKQS/view).)
 
 <hr>
