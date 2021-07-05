@@ -33,8 +33,10 @@ start_delay, stop_delay = lambda: delay(f"start..."), lambda: delay(f"stop...")
 
 
 def reset():
+    """Reset game state and score."""
     global state, first, second
     state, first, second = 0, None, None
+    score.reset()
 
 
 def fsm(signal=None):
