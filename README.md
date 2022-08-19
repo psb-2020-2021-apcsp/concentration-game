@@ -164,7 +164,7 @@ More [TK](https://en.wikipedia.org/wiki/To_come_(publishing)).
 
 Tasks for this project include:
 
-- *This [documentation file](https://github.com/psb-2020-2021-apcsp/concentration-game/blob/main/README.md) should be completed*.
+- *This [documentation file](https://github.com/psb-2020-2021-apcsp/concentration-game/blob/main/README.md) should be completed*, including additional design reviews.
 - In general, all code should follow [PEP-8](https://www.python.org/dev/peps/pep-0008/).
 - In a couple places, instance attributes are defined outside of `__init__` when they are given their initial values. Is that a problem?
 - Currently, the `Image` randomization takes place in `app.py` rather than `files.py`. There are two issues:
@@ -177,8 +177,9 @@ Tasks for this project include:
 - Add some [command-line options](https://docs.python.org/3/library/argparse.html) (perhaps initial game size, logging level, *etc.*?).
 - Classes? Should we encapsulate everything and make it object-oriented?
 - Make this a runnable app? (How?)
-- Update `replit.sh` to selectively use `pip3` and run all unit tests.
+- Update `replit.sh` to the most recent format or selectively use `pip3` and run all unit tests.
 - Set default logging level to `logging.WARNING`, once everything is working (or maybe only `logging.INFO` to file?).
+- Add [Notable Women in Computing](https://drive.google.com/drive/u/0/folders/1kCXyVWO18mY5evxhmwMPreZTbe4P9APV) cards!
 - *So much more!* (See our [notes](https://drive.google.com/file/d/1UhX4aK-9mBqioveEm5JWuqGeYFfpsKQS/view).)
 
 <hr>
